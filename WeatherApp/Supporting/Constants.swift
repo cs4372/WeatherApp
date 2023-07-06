@@ -12,7 +12,7 @@ struct Constants {
     // MARK: - API
     
     static let scheme = "https"
-    static let baseURL = "api.openweathermap.org/"
+    static let baseURL = "api.openweathermap.org"
     static let port: Int? = nil
     static let fullURL = "https://api.openweathermap.org"
     

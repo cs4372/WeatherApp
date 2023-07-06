@@ -9,6 +9,17 @@ import UIKit
 
 class WeatherViewController: UIViewController {
     
+    private let weatherViewModel: WeatherViewModel
+    
+    init(weatherViewModel: WeatherViewModel) {
+        self.weatherViewModel = weatherViewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // stack views
     let rootStackView = UIStackView()
     let topStackView = UIStackView()
@@ -31,9 +42,14 @@ class WeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        view.backgroundColor = .green
         setupUI()
         setupLayout()
+        
+        weatherViewModel.fetchWeatherData(city: "Greece")
+        
+        weatherViewModel.didUpdateWeatherData = { [weak self] in
+            self?.updateUI()
+        }
     }
     
     private func setupUI() {
@@ -50,17 +66,18 @@ class WeatherViewController: UIViewController {
         topWeatherStackView.spacing = 10
         
         temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        temperatureLabel.font = UIFont.systemFont(ofSize: 100)
+        temperatureLabel.font = UIFont.systemFont(ofSize: 80)
         temperatureLabel.tintColor = .label
         temperatureLabel.text = "12"
         
         weatherDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        weatherDescriptionLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+        weatherDescriptionLabel.font = UIFont.preferredFont(forTextStyle: .title1)
         weatherDescriptionLabel.text = "Sunny"
         
         weatherImageView.translatesAutoresizingMaskIntoConstraints = false
         weatherImageView.image = UIImage(systemName: "sun.max")
         weatherImageView.tintColor = .label
+        weatherImageView.contentMode = .scaleAspectFill
         
         bottomStackView.translatesAutoresizingMaskIntoConstraints = false
         bottomStackView.axis = .vertical
@@ -69,7 +86,7 @@ class WeatherViewController: UIViewController {
         
         // bottom stack view content
         cityLabel.translatesAutoresizingMaskIntoConstraints = false
-        cityLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+        cityLabel.font = UIFont.systemFont(ofSize: 60)
         cityLabel.text = "New York"
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -113,7 +130,7 @@ class WeatherViewController: UIViewController {
         
         bottomWeatherInfoStackView.addArrangedSubview(minTempLabel)
         bottomWeatherInfoStackView.addArrangedSubview(maxTempLabel)
-        bottomWeatherInfoStackView.addArrangedSubview(humidityLabel)
+        bottomStackView.addArrangedSubview(humidityLabel)
                         
         NSLayoutConstraint.activate([
             rootStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -122,14 +139,36 @@ class WeatherViewController: UIViewController {
             rootStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             topStackView.topAnchor.constraint(equalToSystemSpacingBelow: rootStackView.topAnchor, multiplier: 2),
-            topStackView.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor),
-            topStackView.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
+            topStackView.leadingAnchor.constraint(equalToSystemSpacingAfter: rootStackView.leadingAnchor, multiplier: 2),
+            rootStackView.trailingAnchor.constraint(equalToSystemSpacingAfter: topStackView.trailingAnchor, multiplier: 2),
 
             bottomStackView.leadingAnchor.constraint(equalTo: rootStackView.leadingAnchor),
             bottomStackView.trailingAnchor.constraint(equalTo: rootStackView.trailingAnchor),
-            rootStackView.bottomAnchor.constraint(equalToSystemSpacingBelow: bottomStackView.bottomAnchor, multiplier: 5),
+            bottomStackView.centerXAnchor.constraint(equalTo: rootStackView.centerXAnchor),
+            bottomStackView.centerYAnchor.constraint(equalTo: rootStackView.centerYAnchor),
+            
             weatherImageView.heightAnchor.constraint(equalToConstant: 120),
             weatherImageView.widthAnchor.constraint(equalToConstant: 120)
         ])
+    }
+    
+    private func updateUI() {
+        DispatchQueue.main.async { [weak self] in
+            guard let weatherData = self?.weatherViewModel.weatherData else {
+                return
+            }
+            
+            let fahrenheitTemperature = Helpers.convertKelvinToFahrenheit(kelvin: weatherData.main.temp)
+            self?.temperatureLabel.text = "\(fahrenheitTemperature)°F"
+            self?.weatherDescriptionLabel.text = weatherData.weather.first?.description
+            self?.cityLabel.text = weatherData.name
+            self?.dateLabel.text = Helpers.getTodayDate()
+            self?.minTempLabel.text = "L:\(Helpers.convertKelvinToFahrenheit(kelvin: weatherData.main.minTemp))"
+            self?.maxTempLabel.text = "H:\(Helpers.convertKelvinToFahrenheit(kelvin: weatherData.main.maxTemp))"
+            self?.humidityLabel.text = "Humidity:\(weatherData.main.humidity)"
+            let imageName = Helpers.getWeatherIconName(for: weatherData.weather.first?.id ?? 0)
+            print("imageName", imageName)
+             self?.weatherImageView.image = UIImage(systemName: imageName)
+        }
     }
 }

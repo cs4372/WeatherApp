@@ -9,8 +9,8 @@ import Foundation
 
 enum Endpoint {
     
-    case fetchWeather(url: String = "data/2.5/weather")
-    
+    case fetchWeather(city: String)
+
     var request: URLRequest? {
         guard let url = self.url else { return nil }
         var request = URLRequest(url: url)
@@ -32,20 +32,20 @@ enum Endpoint {
     
     private var path: String {
         switch self {
-        case .fetchWeather(let url):
-            return url
+        case .fetchWeather:
+            return "/data/2.5/weather"
         }
     }
     
     private var queryItems: [URLQueryItem] {
         switch self {
-        case .fetchWeather:
+        case .fetchWeather(let city):
             return [
-                URLQueryItem(name: "q", value: "london")
+                URLQueryItem(name: "q", value: city),
+                URLQueryItem(name: "appid", value: Constants.API_KEY)
             ]
         }
     }
-    
     
     private var httpMethod: String {
         switch self {
@@ -61,8 +61,6 @@ enum Endpoint {
         }
     }
 }
-
-
 
 extension URLRequest {
     

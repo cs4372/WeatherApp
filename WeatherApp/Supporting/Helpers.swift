@@ -5,7 +5,7 @@
 //  Created by Catherine Shing on 7/6/23.
 //
 
-import Foundation
+import UIKit
 
 struct Helpers {
     static func convertKelvinToFahrenheit(kelvin: Double) -> Int {
@@ -19,24 +19,24 @@ struct Helpers {
         return dateFormatter.string(from: Date())
     }
     
-    static func getWeatherIconName(for conditionId: Int) -> String {
+    static func getWeatherIconName(for conditionId: Int) -> (name: String, backgroundColor: UIColor) {
         switch conditionId {
         case 200...232:
-            return "cloud.bolt"
+            return ("cloud.bolt", .systemGray)
         case 300...321:
-            return "cloud.drizzle"
+            return ("cloud.drizzle", .systemGray)
         case 500...531:
-            return "cloud.rain"
+            return ("cloud.rain", .systemGray)
         case 600...622:
-            return "snow"
+            return ("snow", .systemBlue)
         case 701...781:
-            return "cloud.fog"
+            return ("cloud.fog", .systemGray)
         case 800:
-            return "sun.max"
+            return ("sun.max", .systemYellow)
         case 801...804:
-            return "cloud"
+            return ("cloud", .systemGray)
         default:
-            return "questionmark"
+            return ("questionmark", .systemOrange)
         }
     }
 }

@@ -8,7 +8,6 @@
 import Foundation
 
 enum WeatherServiceError: Error {
-//    case serverError(serviceError)
     case generalError(message: String)
     case decodingError(String = "Error parsing server response.")
 }
@@ -33,7 +32,6 @@ class WeatherService {
                     
                 } catch let err {
                     completion(.failure(.generalError(message: err.localizedDescription)))
-                    print(err.localizedDescription)
                 }
             }
             
@@ -50,23 +48,4 @@ class WeatherService {
             }
         }.resume()
     }
-    
-//    func parseJSON(weatherData: Data) -> WeatherModel? {
-//        let decoder = JSONDecoder()
-//        do {
-//            let weatherData = try decoder.decode(WeatherData.self, from: weatherData)
-//            guard let id = weatherData.weather.first?.id else { return nil }
-//            let name = weatherData.name
-//            let temp = weatherData.main.temp
-//            guard let description = weatherData.weather.first?.description else { return nil }
-//            let minTemp = weatherData.main.minTemp
-//            let maxTemp = weatherData.main.maxTemp
-//
-//            let weather = WeatherModel(conditionId: id, cityName: name, temperature: temp, weatherDescription: description, minTemp: minTemp, maxTemp: maxTemp)
-//            print("weather", weather)
-//            return weather
-//        } catch {
-//            return nil
-//        }
-//    }
 }

@@ -74,35 +74,11 @@
 				47C784CC2A550FBE00E9A61A /* Networking */,
 				47C784CB2A550FB200E9A61A /* Supporting */,
 				47C784CA2A550FAD00E9A61A /* Models */,
-				47C784C92A550FA900E9A61A /* Views */,
-				47C784C82A550F9800E9A61A /* ViewModels */,
-				47C784C72A550F9100E9A61A /* Controllers */,
+				47B438B52A56621A00B4EDDF /* WeatherViewModel.swift */,
+				47C784B72A550F4E00E9A61A /* WeatherViewController.swift */,
 				47C784C12A550F5000E9A61A /* Info.plist */,
 			);
 			path = WeatherApp;
-			sourceTree = "<group>";
-		};
-		47C784C72A550F9100E9A61A /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				47C784B72A550F4E00E9A61A /* WeatherViewController.swift */,
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
-		47C784C82A550F9800E9A61A /* ViewModels */ = {
-			isa = PBXGroup;
-			children = (
-				47B438B52A56621A00B4EDDF /* WeatherViewModel.swift */,
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		47C784C92A550FA900E9A61A /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		47C784CA2A550FAD00E9A61A /* Models */ = {

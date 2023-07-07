@@ -34,7 +34,7 @@ class WeatherViewController: UIViewController {
     
     // bottom stack view content
     let bottomStackContainer = UIView()
-    let cityLabel = UILabel()
+    let cityTextField = UITextField()
     let dateLabel = UILabel()
     let minTempLabel = UILabel()
     let maxTempLabel = UILabel()
@@ -43,11 +43,15 @@ class WeatherViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        cityTextField.delegate = self
+        
         setupUI()
         setupLayout()
-        
-        weatherViewModel.fetchWeatherData(city: "london")
-        
+                
+        weatherViewModel.didUpdateCity = { [weak self] in
+            self?.weatherViewModel.fetchWeatherData(city: self?.weatherViewModel.city ?? "")
+        }
+                
         weatherViewModel.didUpdateWeatherData = { [weak self] in
             self?.updateUI()
         }
@@ -67,13 +71,11 @@ class WeatherViewController: UIViewController {
         topWeatherStackView.spacing = 10
         
         temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        temperatureLabel.font = UIFont.systemFont(ofSize: 80)
+        temperatureLabel.font = UIFont.systemFont(ofSize: 60)
         temperatureLabel.tintColor = .label
-        temperatureLabel.text = "12"
         
         weatherDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         weatherDescriptionLabel.font = UIFont.preferredFont(forTextStyle: .title1)
-        weatherDescriptionLabel.text = "Sunny"
         
         weatherImageView.translatesAutoresizingMaskIntoConstraints = false
         weatherImageView.image = UIImage(systemName: "sun.max")
@@ -92,13 +94,12 @@ class WeatherViewController: UIViewController {
         bottomStackContainer.clipsToBounds = true
         
         // bottom stack view content
-        cityLabel.translatesAutoresizingMaskIntoConstraints = false
-        cityLabel.font = UIFont.systemFont(ofSize: 60)
-        cityLabel.text = "New York"
+        cityTextField.translatesAutoresizingMaskIntoConstraints = false
+        cityTextField.font = UIFont.systemFont(ofSize: 45)
+        cityTextField.placeholder = "Enter city"
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         dateLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle)
-        dateLabel.text = "July 4"
         
         // bottomWeatherInfoStackView - min, max temp + humidity labels
         bottomWeatherInfoStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -108,15 +109,12 @@ class WeatherViewController: UIViewController {
         
         minTempLabel.translatesAutoresizingMaskIntoConstraints = false
         minTempLabel.font = UIFont.preferredFont(forTextStyle: .title2)
-        minTempLabel.text = "L:13"
         
         maxTempLabel.translatesAutoresizingMaskIntoConstraints = false
         maxTempLabel.font = UIFont.preferredFont(forTextStyle: .title2)
-        maxTempLabel.text = "H:21"
         
         humidityLabel.translatesAutoresizingMaskIntoConstraints = false
         humidityLabel.font = UIFont.preferredFont(forTextStyle: .title2)
-        humidityLabel.text = "84"
     }
     
     private func setupLayout() {
@@ -133,7 +131,7 @@ class WeatherViewController: UIViewController {
         
         bottomStackContainer.addSubview(bottomStackView)
         
-        bottomStackView.addArrangedSubview(cityLabel)
+        bottomStackView.addArrangedSubview(cityTextField)
         bottomStackView.addArrangedSubview(dateLabel)
         bottomStackView.addArrangedSubview(bottomWeatherInfoStackView)
         
@@ -169,21 +167,27 @@ class WeatherViewController: UIViewController {
     
     private func updateUI() {
         DispatchQueue.main.async { [weak self] in
-            guard let weatherData = self?.weatherViewModel.weatherData else {
-                return
-            }
-            
-            let fahrenheitTemperature = Helpers.convertKelvinToFahrenheit(kelvin: weatherData.main.temp)
-            self?.temperatureLabel.text = "\(fahrenheitTemperature)°F"
-            self?.weatherDescriptionLabel.text = weatherData.weather.first?.description
-            self?.cityLabel.text = weatherData.name
-            self?.dateLabel.text = Helpers.getTodayDate()
-            self?.minTempLabel.text = "L:\(Helpers.convertKelvinToFahrenheit(kelvin: weatherData.main.minTemp))"
-            self?.maxTempLabel.text = "H:\(Helpers.convertKelvinToFahrenheit(kelvin: weatherData.main.maxTemp))"
-            self?.humidityLabel.text = "Humidity:\(weatherData.main.humidity)"
-            let weatherIconInfo = Helpers.getWeatherIconName(for: weatherData.weather.first?.id ?? 0)
-            self?.weatherImageView.image = UIImage(systemName: weatherIconInfo.name)
-            self?.weatherImageView.tintColor = weatherIconInfo.backgroundColor
+            self?.temperatureLabel.text = self?.weatherViewModel.temperatureString
+            self?.weatherDescriptionLabel.text = self?.weatherViewModel.weatherDescriptionString
+            self?.cityTextField.placeholder = self?.weatherViewModel.cityTextFieldString
+            self?.dateLabel.text = self?.weatherViewModel.todayDateString
+            self?.minTempLabel.text = self?.weatherViewModel.minTempString
+            self?.maxTempLabel.text = self?.weatherViewModel.maxTempString
+            self?.humidityLabel.text = self?.weatherViewModel.humidityString
+            self?.weatherImageView.image = UIImage(systemName: self?.weatherViewModel.weatherImageIconName ?? "")
+            self?.weatherImageView.tintColor = self?.weatherViewModel.weatherImageIconColor
         }
     }
+}
+
+extension WeatherViewController: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+           if textField == cityTextField {
+               weatherViewModel.fetchWeatherData(city: textField.text ?? "")
+               textField.resignFirstResponder()
+    
+               return true
+           }
+           return false
+       }
 }

@@ -23,3 +23,8 @@ cd WeatherApp
 3. Click the play button to initiate the build and run process for the project
 
 # Screenshots
+
+<div style="display: flex;">
+  <img src="https://github.com/cs4372/WeatherApp/blob/master/Screenshots/weatherApp-day.png" height="350px"/>
+  <img src="https://github.com/cs4372/WeatherApp/blob/master/Screenshots/weatherApp-night.png" height="350px"/>
+</div>

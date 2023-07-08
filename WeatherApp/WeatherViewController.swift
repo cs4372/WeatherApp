@@ -25,7 +25,6 @@ class WeatherViewController: UIViewController {
     let topStackView = UIStackView()
     let topWeatherStackView = UIStackView()
     let bottomStackView = UIStackView()
-    let weatherLocationStackView = UIStackView()
     let bottomWeatherTempInfoStackView = UIStackView()
     
     // background
@@ -98,12 +97,9 @@ class WeatherViewController: UIViewController {
         bottomStackContainer.clipsToBounds = true
         
         // bottom stack view content
-        weatherLocationStackView.translatesAutoresizingMaskIntoConstraints = false
-        weatherLocationStackView.axis = .horizontal
-        weatherLocationStackView.spacing = 15
         
         cityTextField.translatesAutoresizingMaskIntoConstraints = false
-        cityTextField.font = UIFont.systemFont(ofSize: 35)
+        cityTextField.font = UIFont.systemFont(ofSize: 45)
         cityTextField.textAlignment = .center
         cityTextField.textColor = UIColor.gray
         cityTextField.isUserInteractionEnabled = true
@@ -135,6 +131,7 @@ class WeatherViewController: UIViewController {
     private func setupLayout() {
         view.addSubview(backgroundView)
         view.addSubview(rootStackView)
+        view.addSubview(locationButton)
         
         rootStackView.addSubview(topStackView)
         rootStackView.addSubview(bottomStackContainer)
@@ -146,11 +143,7 @@ class WeatherViewController: UIViewController {
         topWeatherStackView.addArrangedSubview(weatherDescriptionLabel)
         
         bottomStackContainer.addSubview(bottomStackView)
-        
-        weatherLocationStackView.addArrangedSubview(cityTextField)
-        weatherLocationStackView.addArrangedSubview(locationButton)
-        
-        bottomStackView.addArrangedSubview(weatherLocationStackView)
+        bottomStackView.addArrangedSubview(cityTextField)
         bottomStackView.addArrangedSubview(dateLabel)
         bottomStackView.addArrangedSubview(bottomWeatherTempInfoStackView)
         
@@ -169,7 +162,7 @@ class WeatherViewController: UIViewController {
             view.trailingAnchor.constraint(equalToSystemSpacingAfter: rootStackView.trailingAnchor, multiplier: 2),
             rootStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
-            topStackView.topAnchor.constraint(equalToSystemSpacingBelow: rootStackView.topAnchor, multiplier: 2),
+            topStackView.topAnchor.constraint(equalToSystemSpacingBelow: rootStackView.topAnchor, multiplier: 10),
             topStackView.leadingAnchor.constraint(equalToSystemSpacingAfter: rootStackView.leadingAnchor, multiplier: 2),
             rootStackView.trailingAnchor.constraint(equalToSystemSpacingAfter: topStackView.trailingAnchor, multiplier: 2),
             
@@ -178,12 +171,13 @@ class WeatherViewController: UIViewController {
             bottomStackContainer.leadingAnchor.constraint(equalToSystemSpacingAfter: rootStackView.leadingAnchor, multiplier: 2),
             rootStackView.trailingAnchor.constraint(equalToSystemSpacingAfter: bottomStackContainer.trailingAnchor, multiplier: 2),
             
-            weatherLocationStackView.centerXAnchor.constraint(equalTo: bottomStackView.centerXAnchor),
-            
             bottomStackView.leadingAnchor.constraint(equalToSystemSpacingAfter: bottomStackContainer.leadingAnchor, multiplier: 2),
             bottomStackContainer.trailingAnchor.constraint(equalToSystemSpacingAfter: bottomStackView.trailingAnchor, multiplier: 2),
             bottomStackView.topAnchor.constraint(equalToSystemSpacingBelow: bottomStackContainer.topAnchor, multiplier: 5),
             bottomStackContainer.bottomAnchor.constraint(equalToSystemSpacingBelow: bottomStackView.bottomAnchor, multiplier: 5),
+            
+            locationButton.topAnchor.constraint(equalToSystemSpacingBelow: rootStackView.topAnchor, multiplier: 1),
+            rootStackView.trailingAnchor.constraint(equalToSystemSpacingAfter: locationButton.trailingAnchor, multiplier: 2),
             
             locationButton.widthAnchor.constraint(equalToConstant: 35),
             locationButton.heightAnchor.constraint(equalToConstant: 35),
@@ -198,16 +192,11 @@ class WeatherViewController: UIViewController {
     }
     
     private func updateWeatherData() {
-         weatherViewModel.fetchInitialLocation()
-         weatherViewModel.didUpdateCity = { [weak self] in
-             self?.weatherViewModel.fetchWeatherData(city: self?.weatherViewModel.city ?? "")
-
-         }
-         
-         weatherViewModel.didUpdateWeatherData = { [weak self] in
-             self?.updateUI()
-         }
-     }
+        weatherViewModel.fetchWeatherForCurrentLocation()
+        weatherViewModel.didUpdateWeatherData = { [weak self] in
+            self?.updateUI()
+        }
+    }
     
     @objc private func locationButtonClicked() {
         updateWeatherData()
@@ -239,12 +228,12 @@ class WeatherViewController: UIViewController {
     }
     
     private func displayErrorClosure() {
-        weatherViewModel.didDisplayError = { [weak self] message in
+        weatherViewModel.didDisplayError = { [weak self] title, message in
             DispatchQueue.main.async {
                 guard let viewController = self else {
                     return
                 }
-                Helpers.showAlert(title: message, message: "", over: viewController)
+                Helpers.showAlert(title: title, message: message, over: viewController)
                 self?.cityTextField.text = ""
             }
         }

@@ -10,6 +10,7 @@ import Foundation
 enum WeatherServiceError: Error {
     case generalError(message: String)
     case decodingError(String = "Error parsing server response.")
+    case serverError(message: String)
 }
 
 class WeatherService {
@@ -25,14 +26,9 @@ class WeatherService {
             }
             
             if let resp = resp as? HTTPURLResponse, resp.statusCode != 200 {
-                
-                do {
-                    let weatherError = try JSONDecoder().decode(ServiceError.self, from: data ?? Data())
-                    completion(.failure(.generalError(message: weatherError.message)))
-                    
-                } catch let err {
-                    completion(.failure(.generalError(message: err.localizedDescription)))
-                }
+                let serverErrorMessage = "Server responded with status code \(resp.statusCode)"
+                completion(.failure(.serverError(message: serverErrorMessage)))
+                return
             }
             
             if let data = data {
@@ -42,7 +38,7 @@ class WeatherService {
                     completion(.success(weatherData))
                     
                 } catch let err {
-                    completion(.failure(.generalError(message: err.localizedDescription)))
+                    completion(.failure(.decodingError(err.localizedDescription)))
                 }
                 
             }

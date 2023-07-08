@@ -21,9 +21,7 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     
     var city: String? {
         didSet {
-            DispatchQueue.main.async {
-                self.notifyDidUpdateCity()
-            }
+            notifyDidUpdateCity()
         }
     }
     
@@ -72,15 +70,14 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     
     var didUpdateWeatherData: (() -> Void)?
     var didUpdateCity: (() -> Void)?
-    var didDisplayError: ((String) -> Void)?
+    var didDisplayError: ((String, String) -> Void)?
     
     init(weatherService: WeatherService) {
         self.weatherService = weatherService
-        super.init()
-        locationManager.delegate = self
     }
     
-    func fetchInitialLocation() {
+    func fetchWeatherForCurrentLocation() {
+        locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startUpdatingLocation()
     }
@@ -91,26 +88,25 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
             case .success(let weatherData):
                 self?.weatherData = weatherData
             case .failure(let error):
-                self?.handleError(error)
-                self?.didDisplayError?("Enter a valid city name")
+                let errorMessage = self?.handleError(error)
+                if let errorMessage {
+                    let titleMessage = "Please try again!"
+                    self?.didDisplayError?(titleMessage, errorMessage)
+                }
             }
         }
     }
     
-    private func handleError(_ error: WeatherServiceError) {
+    private func handleError(_ error: WeatherServiceError) -> String {
         switch error {
         case .generalError(let message):
-            print("Error fetching weather data:", message)
+            return "Error occurred: \(message)"
         case .decodingError(let message):
-            print("Error decoding weather data:", message)
-        }
-    }
-    
-    func fetchWeatherDataForCurrentLocation() {
-        if let currentCity = self.city {
-            self.city = currentCity
-            
-            fetchWeatherData(city: currentCity)
+            print("decodingError error", message)
+            return "Error parsing server response: \(message)"
+        case .serverError(let message):
+            print("server error", message)
+            return "An error occurred on the server."
         }
     }
     
@@ -128,7 +124,9 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
                 return
             }
             self?.city = city
+            self?.fetchWeatherData(city: city)
         }
+
         locationManager.stopUpdatingLocation()
     }
     

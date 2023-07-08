@@ -13,17 +13,21 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     private let weatherService: WeatherService
     private let locationManager = CLLocationManager()
     
+    init(weatherService: WeatherService) {
+        self.weatherService = weatherService
+    }
+    
     var weatherData: WeatherData? {
         didSet {
             notifyDidUpdateWeatherData()
         }
     }
     
-    var city: String? {
-        didSet {
-            notifyDidUpdateCity()
-        }
-    }
+    // MARK: - Callback closures to update UI
+    
+    var didUpdateWeatherData: (() -> Void)?
+    var didDisplayError: ((String, String) -> Void)?
+    
     
     // MARK: - Computed Properties for UI labels
     
@@ -64,16 +68,6 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     
     var humidityString: String {
         return "Humidity: \(weatherData?.main.humidity ?? 0)"
-    }
-    
-    // MARK: - Callback closures to update UI
-    
-    var didUpdateWeatherData: (() -> Void)?
-    var didUpdateCity: (() -> Void)?
-    var didDisplayError: ((String, String) -> Void)?
-    
-    init(weatherService: WeatherService) {
-        self.weatherService = weatherService
     }
     
     func fetchWeatherForCurrentLocation() {
@@ -123,7 +117,6 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
                   let city = placemark.locality else {
                 return
             }
-            self?.city = city
             self?.fetchWeatherData(city: city)
         }
 
@@ -133,12 +126,6 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     private func notifyDidUpdateWeatherData() {
         DispatchQueue.main.async {
             self.didUpdateWeatherData?()
-        }
-    }
-    
-    private func notifyDidUpdateCity() {
-        DispatchQueue.main.async {
-            self.didUpdateCity?()
         }
     }
 }

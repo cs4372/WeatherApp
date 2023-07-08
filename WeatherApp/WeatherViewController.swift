@@ -202,7 +202,7 @@ class WeatherViewController: UIViewController {
         updateWeatherData()
     }
     
-    private func updateUI() {
+    internal func updateUI() {
         DispatchQueue.main.async { [weak self] in
             self?.temperatureLabel.text = self?.weatherViewModel.temperatureString
             self?.weatherDescriptionLabel.text = self?.weatherViewModel.weatherDescriptionString
@@ -217,7 +217,7 @@ class WeatherViewController: UIViewController {
     }
     
     // Hide the keyboard and fetch weather data when user taps the view
-    @objc private func handleTap(sender: UITapGestureRecognizer) {
+    @objc internal func handleTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             let tapLocation = sender.location(in: view)
             if !cityTextField.frame.contains(tapLocation) {

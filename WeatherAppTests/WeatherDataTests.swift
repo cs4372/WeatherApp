@@ -11,6 +11,7 @@ import XCTest
 final class WeatherDataTests: XCTestCase {
     
     func testParsingWeatherData() throws {
+        // Given
         let json = """
             {
               "weather": [
@@ -29,10 +30,12 @@ final class WeatherDataTests: XCTestCase {
             }
            """
         
+        // When
         let jsonData = json.data(using: .utf8)!
         let decoder = JSONDecoder()
         let weatherData = try decoder.decode(WeatherData.self, from: jsonData)
         
+        // Assert
         XCTAssertEqual(10.58, weatherData.main.temp)
         XCTAssertEqual(12.25, weatherData.main.minTemp)
         XCTAssertEqual(18.25, weatherData.main.maxTemp)
@@ -43,6 +46,7 @@ final class WeatherDataTests: XCTestCase {
     }
     
     func testParsingWeatherDataWithEmptyName() throws {
+        // Given
         let json = """
          {
            "weather": [
@@ -61,9 +65,11 @@ final class WeatherDataTests: XCTestCase {
          }
         """
         
+        // When
         let jsonData = json.data(using: .utf8)!
         let weatherData = try! JSONDecoder().decode(WeatherData.self, from: jsonData)
         
+        // Assert
         XCTAssertEqual("", weatherData.name)
     }
 }

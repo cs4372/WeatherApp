@@ -7,7 +7,7 @@
 
 import XCTest
 @testable import WeatherApp
-
+import CoreLocation
 
 final class WeatherViewModelTests: XCTestCase {
     
@@ -26,6 +26,12 @@ final class WeatherViewModelTests: XCTestCase {
         try super.tearDownWithError()
     }
     
+    func testInitialization() {
+        // Assert
+        XCTAssertNotNil(sut, "The profile view model should not be nil.")
+        XCTAssertTrue(sut.weatherService is MockWeatherService, "The weatherService should be equal to the weatherService that was passed in.")
+    }
+    
     func testFetchWeatherData_onAPISuccess() {
         // Given
         let city = "London"
@@ -35,7 +41,7 @@ final class WeatherViewModelTests: XCTestCase {
         // When
         sut.fetchWeatherData(city: city)
         
-        //Assert
+        // Assert
         XCTAssert(mockWeatherService.isFetchWeatherCalled)
         XCTAssertEqual(self.sut.weatherData, weather)
     }
@@ -49,7 +55,7 @@ final class WeatherViewModelTests: XCTestCase {
         // When
         sut.fetchWeatherData(city: city)
             
-        //Assert
+        // Assert
         sut.didDisplayError = { title, message in
             XCTAssertEqual(title, "Please try again!")
             XCTAssertEqual(message, expectedError.localizedDescription)
@@ -64,7 +70,7 @@ final class WeatherViewModelTests: XCTestCase {
         // When
         let humidityString = sut.humidityString
         
-        // Then
+        //Assert
         XCTAssertEqual(humidityString, "Humidity: 80")
     }
     
@@ -76,14 +82,29 @@ final class WeatherViewModelTests: XCTestCase {
         // When
         let iconName = sut.weatherImageIconName
         
-        // Then
+        // Assert
         XCTAssertEqual(iconName, "sun.max")
+    }
+    
+    // checks if notifyDidUpdateWeatherData triggers the didUpdateWeatherData closure 
+    func testNotifyDidUpdateWeatherData() {
+        // Given
+        let expectation = XCTestExpectation(description: "didUpdateWeatherData closure called")
+        
+        sut.didUpdateWeatherData = {
+            expectation.fulfill()
+        }
+        
+        // When
+        sut.notifyDidUpdateWeatherData()
+        
+        // Assert to wait for the expectation to be fulfilled
+        wait(for: [expectation], timeout: 1.0)
     }
 }
 
 class MockWeatherService: WeatherService {
     var fetchWeatherMockResult: Result<WeatherData, WeatherServiceError>?
-    var completeClosure: ((Result<WeatherData, WeatherServiceError>) -> ())!
     var fetchWeatherCity: String?
     var isFetchWeatherCalled = false
     
@@ -93,5 +114,13 @@ class MockWeatherService: WeatherService {
         if let result = fetchWeatherMockResult {
             completion(result)
         }
+    }
+}
+
+class MockCLLocationManagerDelegate: NSObject, CLLocationManagerDelegate {
+    var notifyDidUpdateWeatherDataCalled = false
+    
+    func notifyDidUpdateWeatherData() {
+        notifyDidUpdateWeatherDataCalled = true
     }
 }

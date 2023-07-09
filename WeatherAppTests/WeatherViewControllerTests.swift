@@ -32,7 +32,7 @@ class WeatherViewControllerTests: XCTestCase {
         // When
         sut.setupUI()
         
-        // Then
+        // Assert
         XCTAssertNotNil(sut.rootStackView)
         XCTAssertNotNil(sut.topStackView)
         XCTAssertNotNil(sut.topWeatherStackView)
@@ -55,7 +55,7 @@ class WeatherViewControllerTests: XCTestCase {
         // When
         sut.updateWeatherData()
         
-        // Then
+        // Assert
         XCTAssertTrue(weatherViewModel.fetchWeatherForCurrentLocationCalled)
     }
     
@@ -63,7 +63,7 @@ class WeatherViewControllerTests: XCTestCase {
         // When
         sut.locationButtonClicked()
         
-        // Then
+        // Assert
         XCTAssertTrue(weatherViewModel.fetchWeatherForCurrentLocationCalled)
     }
     
@@ -75,7 +75,7 @@ class WeatherViewControllerTests: XCTestCase {
         // When clicks on return on the text field
         let result = sut.textFieldShouldReturn(textField)
 
-        // Then
+        // Assert
         XCTAssertTrue(result)
         XCTAssertTrue(weatherViewModel.fetchWeatherDataCalled)
         XCTAssertEqual(weatherViewModel.fetchWeatherCity, "London")

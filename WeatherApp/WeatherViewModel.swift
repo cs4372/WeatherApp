@@ -10,8 +10,8 @@ import CoreLocation
 
 class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     
-    private let weatherService: WeatherService
-    private let locationManager = CLLocationManager()
+    internal let weatherService: WeatherService
+    internal let locationManager = CLLocationManager()
     
     init(weatherService: WeatherService) {
         self.weatherService = weatherService
@@ -122,7 +122,7 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
         locationManager.stopUpdatingLocation()
     }
     
-    private func notifyDidUpdateWeatherData() {
+    internal func notifyDidUpdateWeatherData() {
         DispatchQueue.main.async {
             self.didUpdateWeatherData?()
         }

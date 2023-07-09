@@ -28,7 +28,6 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     var didUpdateWeatherData: (() -> Void)?
     var didDisplayError: ((String, String) -> Void)?
     
-    
     // MARK: - Computed Properties for UI labels
     
     var temperatureString: String {

@@ -7,13 +7,19 @@
 
 import Foundation
 
-struct WeatherData: Decodable {
+struct WeatherData: Equatable, Decodable {
     let name: String
     let main: Main
     let weather: [Weather]
+    
+    static func == (lhs: WeatherData, rhs: WeatherData) -> Bool {
+        return lhs.name == rhs.name &&
+        lhs.main == rhs.main &&
+        lhs.weather == rhs.weather
+    }
 }
 
-struct Main: Decodable {
+struct Main: Equatable, Decodable {
     let temp: Double
     let minTemp: Double
     let maxTemp: Double
@@ -23,10 +29,10 @@ struct Main: Decodable {
         case temp, humidity
         case minTemp = "temp_min"
         case maxTemp = "temp_max"
-     }
+    }
 }
 
-struct Weather: Decodable {
+struct Weather: Equatable, Decodable {
     let description: String
     let id: Int
 }

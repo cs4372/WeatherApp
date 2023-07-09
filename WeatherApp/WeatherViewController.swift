@@ -9,7 +9,7 @@ import UIKit
 
 class WeatherViewController: UIViewController {
     
-    private let weatherViewModel: WeatherViewModel
+    internal var weatherViewModel: WeatherViewModel
     
     init(weatherViewModel: WeatherViewModel) {
         self.weatherViewModel = weatherViewModel
@@ -54,7 +54,7 @@ class WeatherViewController: UIViewController {
         displayErrorClosure()
     }
     
-    private func setupUI() {
+    internal func setupUI() {
         cityTextField.delegate = self
 
         rootStackView.translatesAutoresizingMaskIntoConstraints = false
@@ -191,14 +191,14 @@ class WeatherViewController: UIViewController {
         view.addGestureRecognizer(tapGesture)
     }
     
-    private func updateWeatherData() {
+    internal func updateWeatherData() {
         weatherViewModel.fetchWeatherForCurrentLocation()
         weatherViewModel.didUpdateWeatherData = { [weak self] in
             self?.updateUI()
         }
     }
     
-    @objc private func locationButtonClicked() {
+    @objc internal func locationButtonClicked() {
         updateWeatherData()
     }
     

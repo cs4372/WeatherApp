@@ -13,9 +13,13 @@ enum WeatherServiceError: Error {
     case serverError(message: String)
 }
 
-class WeatherService {
-    
-    static func fetchWeather(with city: String, completion: @escaping (Result<WeatherData, WeatherServiceError>)->Void) {
+protocol WeatherService {
+    func fetchWeather(with city: String, completion: @escaping (Result<WeatherData, WeatherServiceError>)->Void)
+}
+
+class APIManager: WeatherService {
+
+    func fetchWeather(with city: String, completion: @escaping (Result<WeatherData, WeatherServiceError>)->Void) {
         
         guard let request = Endpoint.fetchWeather(city: city).request else { return }
                         

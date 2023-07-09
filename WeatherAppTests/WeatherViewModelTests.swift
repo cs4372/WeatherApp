@@ -12,17 +12,17 @@ import XCTest
 final class WeatherViewModelTests: XCTestCase {
     
     private var sut: WeatherViewModel!
-    private var weatherService: MockWeatherService!
+    private var mockWeatherService: MockWeatherService!
 
     override func setUpWithError() throws {
-        weatherService = MockWeatherService()
-        sut = WeatherViewModel(weatherService: weatherService)
+        mockWeatherService = MockWeatherService()
+        sut = WeatherViewModel(weatherService: mockWeatherService)
         try super.setUpWithError()
     }
 
     override func tearDownWithError() throws {
         sut = nil
-        weatherService = nil
+        mockWeatherService = nil
         try super.tearDownWithError()
     }
     
@@ -30,28 +30,27 @@ final class WeatherViewModelTests: XCTestCase {
         // Given
         let city = "London"
         let weather = WeatherData(name: city, main: Main(temp: 12, minTemp: 20, maxTemp: 30, humidity: 80), weather: [Weather(description: "Very hot", id: 20)])
-        weatherService.fetchWeatherMockResult = .success(weather)
-
+        mockWeatherService.fetchWeatherMockResult = .success(weather)
+        
         // When
         sut.fetchWeatherData(city: city)
-
-        // Then
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            XCTAssertEqual(self.sut.weatherData, weather)
-        }
+        
+        //Assert
+        XCTAssert(mockWeatherService.isFetchWeatherCalled)
+        XCTAssertEqual(self.sut.weatherData, weather)
     }
     
     func testFetchWeatherData_onAPIFailure() {
         // Given
         let city = "London"
         let expectedError = WeatherServiceError.serverError(message: "Server error occurred")
-        weatherService.fetchWeatherMockResult = .failure(expectedError)
+        mockWeatherService.fetchWeatherMockResult = .failure(expectedError)
         
         // When
         sut.fetchWeatherData(city: city)
-                
+            
+        //Assert
         sut.didDisplayError = { title, message in
-            // Then
             XCTAssertEqual(title, "Please try again!")
             XCTAssertEqual(message, expectedError.localizedDescription)
         }
@@ -84,10 +83,13 @@ final class WeatherViewModelTests: XCTestCase {
 
 class MockWeatherService: WeatherService {
     var fetchWeatherMockResult: Result<WeatherData, WeatherServiceError>?
+    var completeClosure: ((Result<WeatherData, WeatherServiceError>) -> ())!
     var fetchWeatherCity: String?
-
+    var isFetchWeatherCalled = false
+    
     func fetchWeather(with city: String, completion: @escaping (Result<WeatherData, WeatherServiceError>) -> Void) {
         fetchWeatherCity = city
+        isFetchWeatherCalled = true
         if let result = fetchWeatherMockResult {
             completion(result)
         }

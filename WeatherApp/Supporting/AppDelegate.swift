@@ -13,7 +13,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        let weatherService = WeatherService()
+        let weatherService: WeatherService = APIManager()
         let weatherViewModel = WeatherViewModel(weatherService: weatherService)
         
         window = UIWindow(frame: UIScreen.main.bounds)

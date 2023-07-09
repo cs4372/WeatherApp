@@ -76,7 +76,7 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     }
     
     func fetchWeatherData(city: String) {
-        WeatherService.fetchWeather(with: city) { [weak self] result in
+        weatherService.fetchWeather(with: city) { [weak self] result in
             switch result {
             case .success(let weatherData):
                 self?.weatherData = weatherData

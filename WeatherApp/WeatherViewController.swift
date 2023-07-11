@@ -92,7 +92,7 @@ class WeatherViewController: UIViewController {
         
         bottomStackContainer.translatesAutoresizingMaskIntoConstraints = false
         bottomStackContainer.layer.borderWidth = 5.0
-        bottomStackContainer.layer.borderColor = UIColor.systemBackground.cgColor
+        bottomStackContainer.layer.borderColor = UIColor.white.cgColor
         bottomStackContainer.layer.cornerRadius = 8.0
         bottomStackContainer.clipsToBounds = true
         
@@ -104,6 +104,7 @@ class WeatherViewController: UIViewController {
         cityTextField.textColor = UIColor.gray
         cityTextField.isUserInteractionEnabled = true
         cityTextField.placeholder = "Enter city"
+        cityTextField.borderStyle = .roundedRect
         
         locationButton.translatesAutoresizingMaskIntoConstraints = false
         locationButton.setBackgroundImage(UIImage(systemName: "location.circle.fill"), for: .normal)

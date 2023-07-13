@@ -22,27 +22,16 @@ class WeatherViewController: UIViewController {
     
     // stack views
     let rootStackView = UIStackView()
-    let topStackView = UIStackView()
-    let topWeatherStackView = UIStackView()
-    let bottomStackView = UIStackView()
-    let bottomWeatherTempInfoStackView = UIStackView()
-    
-    // background
+    let topStackView = TopStackView()
+    let bottomStackView = BottomStackView()
+
+    // background view
     let backgroundView = UIImageView()
-    
-    // top stack view content
-    let temperatureLabel = UILabel()
-    let weatherDescriptionLabel = UILabel()
-    let weatherImageView = UIImageView()
-    
+            
     // bottom stack view content
     let bottomStackContainer = UIView()
-    let cityTextField = UITextField()
+    
     let locationButton = UIButton()
-    let dateLabel = UILabel()
-    let minTempLabel = UILabel()
-    let maxTempLabel = UILabel()
-    let humidityLabel = UILabel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,7 +44,7 @@ class WeatherViewController: UIViewController {
     }
     
     internal func setupUI() {
-        cityTextField.delegate = self
+        bottomStackView.cityTextField.delegate = self
 
         rootStackView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -63,70 +52,15 @@ class WeatherViewController: UIViewController {
         backgroundView.image = UIImage(named: "background")
         backgroundView.contentMode = .scaleAspectFill
         
-        topStackView.translatesAutoresizingMaskIntoConstraints = false
-        topStackView.axis = .horizontal
-        topStackView.spacing = 10
-        topStackView.alignment = .top
-        
-        topWeatherStackView.translatesAutoresizingMaskIntoConstraints = false
-        // topWeatherStackView.alignment = .leading
-        topWeatherStackView.axis = .vertical
-        topWeatherStackView.spacing = 10
-        
-        temperatureLabel.translatesAutoresizingMaskIntoConstraints = false
-        temperatureLabel.font = UIFont.systemFont(ofSize: 60)
-        temperatureLabel.tintColor = .label
-        
-        weatherDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        weatherDescriptionLabel.font = UIFont.preferredFont(forTextStyle: .title1)
-        
-        weatherImageView.translatesAutoresizingMaskIntoConstraints = false
-        weatherImageView.image = UIImage(systemName: "sun.max")
-        weatherImageView.tintColor = .label
-        weatherImageView.contentMode = .scaleAspectFill
-        
-        bottomStackView.translatesAutoresizingMaskIntoConstraints = false
-        bottomStackView.axis = .vertical
-        bottomStackView.alignment = .center
-        bottomStackView.spacing = 15
-        
         bottomStackContainer.translatesAutoresizingMaskIntoConstraints = false
         bottomStackContainer.layer.borderWidth = 5.0
         bottomStackContainer.layer.borderColor = UIColor.white.cgColor
         bottomStackContainer.layer.cornerRadius = 8.0
         bottomStackContainer.clipsToBounds = true
         
-        // bottom stack view content
-        
-        cityTextField.translatesAutoresizingMaskIntoConstraints = false
-        cityTextField.font = UIFont.systemFont(ofSize: 45)
-        cityTextField.textAlignment = .center
-        cityTextField.textColor = UIColor.gray
-        cityTextField.isUserInteractionEnabled = true
-        cityTextField.placeholder = "Enter city"
-        cityTextField.borderStyle = .roundedRect
-        
         locationButton.translatesAutoresizingMaskIntoConstraints = false
         locationButton.setBackgroundImage(UIImage(systemName: "location.circle.fill"), for: .normal)
         locationButton.addTarget(self, action: #selector(locationButtonClicked), for: .touchUpInside)
-        
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.font = UIFont.preferredFont(forTextStyle: .largeTitle)
-        
-        // bottomWeatherInfoStackView - min, max temp + humidity labels
-        bottomWeatherTempInfoStackView.translatesAutoresizingMaskIntoConstraints = false
-        bottomWeatherTempInfoStackView.axis = .horizontal
-        bottomWeatherTempInfoStackView.alignment = .center
-        bottomWeatherTempInfoStackView.spacing = 15
-        
-        minTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        minTempLabel.font = UIFont.preferredFont(forTextStyle: .title2)
-        
-        maxTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        maxTempLabel.font = UIFont.preferredFont(forTextStyle: .title2)
-        
-        humidityLabel.translatesAutoresizingMaskIntoConstraints = false
-        humidityLabel.font = UIFont.preferredFont(forTextStyle: .title2)
     }
     
     private func setupLayout() {
@@ -136,21 +70,7 @@ class WeatherViewController: UIViewController {
         
         rootStackView.addSubview(topStackView)
         rootStackView.addSubview(bottomStackContainer)
-        
-        topStackView.addArrangedSubview(topWeatherStackView)
-        topStackView.addArrangedSubview(weatherImageView)
-        
-        topWeatherStackView.addArrangedSubview(temperatureLabel)
-        topWeatherStackView.addArrangedSubview(weatherDescriptionLabel)
-        
         bottomStackContainer.addSubview(bottomStackView)
-        bottomStackView.addArrangedSubview(cityTextField)
-        bottomStackView.addArrangedSubview(dateLabel)
-        bottomStackView.addArrangedSubview(bottomWeatherTempInfoStackView)
-        
-        bottomWeatherTempInfoStackView.addArrangedSubview(minTempLabel)
-        bottomWeatherTempInfoStackView.addArrangedSubview(maxTempLabel)
-        bottomStackView.addArrangedSubview(humidityLabel)
         
         NSLayoutConstraint.activate([
             backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
@@ -181,9 +101,7 @@ class WeatherViewController: UIViewController {
             rootStackView.trailingAnchor.constraint(equalToSystemSpacingAfter: locationButton.trailingAnchor, multiplier: 2),
             
             locationButton.widthAnchor.constraint(equalToConstant: 35),
-            locationButton.heightAnchor.constraint(equalToConstant: 35),
-            weatherImageView.heightAnchor.constraint(equalToConstant: 100),
-            weatherImageView.widthAnchor.constraint(equalToConstant: 100)
+            locationButton.heightAnchor.constraint(equalToConstant: 35)
         ])
     }
     
@@ -205,15 +123,18 @@ class WeatherViewController: UIViewController {
     
     internal func updateUI() {
         DispatchQueue.main.async { [weak self] in
-            self?.temperatureLabel.text = self?.weatherViewModel.temperatureString
-            self?.weatherDescriptionLabel.text = self?.weatherViewModel.weatherDescriptionString
-            self?.cityTextField.text = self?.weatherViewModel.cityTextFieldString
-            self?.dateLabel.text = self?.weatherViewModel.todayDateString
-            self?.minTempLabel.text = self?.weatherViewModel.minTempString
-            self?.maxTempLabel.text = self?.weatherViewModel.maxTempString
-            self?.humidityLabel.text = self?.weatherViewModel.humidityString
-            self?.weatherImageView.image = UIImage(systemName: self?.weatherViewModel.weatherImageIconName ?? "")
-            self?.weatherImageView.tintColor = self?.weatherViewModel.weatherImageIconColor
+            guard let self = self else { return }
+            
+            bottomStackView.cityTextField.text = weatherViewModel.cityTextFieldString
+            bottomStackView.dateLabel.text = weatherViewModel.todayDateString
+            bottomStackView.minTempLabel.text = weatherViewModel.minTempString
+            bottomStackView.maxTempLabel.text = weatherViewModel.maxTempString
+            bottomStackView.humidityLabel.text = weatherViewModel.humidityString
+            
+            topStackView.temperatureLabel.text = weatherViewModel.temperatureString
+            topStackView.weatherDescriptionLabel.text = weatherViewModel.weatherDescriptionString
+            topStackView.weatherImageView.image = UIImage(systemName: weatherViewModel.weatherImageIconName)
+            topStackView.weatherImageView.tintColor = weatherViewModel.weatherImageIconColor
         }
     }
     
@@ -221,9 +142,9 @@ class WeatherViewController: UIViewController {
     @objc internal func handleTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             let tapLocation = sender.location(in: view)
-            if !cityTextField.frame.contains(tapLocation) {
+            if !self.bottomStackView.cityTextField.frame.contains(tapLocation) {
                 view.endEditing(true)
-                weatherViewModel.fetchWeatherData(city: cityTextField.text ?? "")
+                weatherViewModel.fetchWeatherData(city: self.bottomStackView.cityTextField.text ?? "")
             }
         }
     }
@@ -235,7 +156,7 @@ class WeatherViewController: UIViewController {
                     return
                 }
                 Helpers.showAlert(title: title, message: message, over: viewController)
-                self?.cityTextField.text = ""
+                self?.self.bottomStackView.cityTextField.text = ""
             }
         }
     }
@@ -243,7 +164,7 @@ class WeatherViewController: UIViewController {
 
 extension WeatherViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == cityTextField {
+        if textField == self.bottomStackView.cityTextField {
             weatherViewModel.fetchWeatherData(city: textField.text ?? "")
             textField.resignFirstResponder()
             

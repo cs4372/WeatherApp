@@ -35,20 +35,10 @@ class WeatherViewControllerTests: XCTestCase {
         // Assert
         XCTAssertNotNil(sut.rootStackView)
         XCTAssertNotNil(sut.topStackView)
-        XCTAssertNotNil(sut.topWeatherStackView)
         XCTAssertNotNil(sut.bottomStackView)
-        XCTAssertNotNil(sut.bottomWeatherTempInfoStackView)
         XCTAssertNotNil(sut.backgroundView)
-        XCTAssertNotNil(sut.temperatureLabel)
-        XCTAssertNotNil(sut.weatherDescriptionLabel)
-        XCTAssertNotNil(sut.weatherImageView)
         XCTAssertNotNil(sut.bottomStackContainer)
-        XCTAssertNotNil(sut.cityTextField)
         XCTAssertNotNil(sut.locationButton)
-        XCTAssertNotNil(sut.dateLabel)
-        XCTAssertNotNil(sut.minTempLabel)
-        XCTAssertNotNil(sut.maxTempLabel)
-        XCTAssertNotNil(sut.humidityLabel)
     }
     
     func testFetchWeatherForCurrentLocation() {
@@ -67,9 +57,9 @@ class WeatherViewControllerTests: XCTestCase {
         XCTAssertTrue(weatherViewModel.fetchWeatherForCurrentLocationCalled)
     }
     
-    func testTextFieldShouldReturn_WithCityTextField_ShouldFetchWeatherData() {
+    func testTextFieldShouldReturn() {
         // Given
-        let textField = sut.cityTextField
+        let textField = sut.bottomStackView.cityTextField
         textField.text = "London"
 
         // When clicks on return on the text field

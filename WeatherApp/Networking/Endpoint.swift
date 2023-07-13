@@ -38,11 +38,12 @@ enum Endpoint {
     }
     
     private var queryItems: [URLQueryItem] {
+        var constants = Constants()
         switch self {
         case .fetchWeather(let city):
             return [
                 URLQueryItem(name: "q", value: city),
-                URLQueryItem(name: "appid", value: Constants.API_KEY)
+                URLQueryItem(name: "appid", value: constants.API_KEY)
             ]
         }
     }
@@ -65,9 +66,11 @@ enum Endpoint {
 extension URLRequest {
     
     mutating func addValues(for endpoint: Endpoint) {
+        var constants = Constants()
+
         switch endpoint {
         case .fetchWeather:
-            self.setValue(Constants.API_KEY, forHTTPHeaderField: HTTP.Headers.Key.apiKey.rawValue)
+            self.setValue(constants.API_KEY, forHTTPHeaderField: HTTP.Headers.Key.apiKey.rawValue)
         }
     }
 }

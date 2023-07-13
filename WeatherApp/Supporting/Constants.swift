@@ -16,14 +16,13 @@ struct Constants {
     static let port: Int? = nil
     static let fullURL = "https://api.openweathermap.org"
     
-    static var API_KEY: String {
-          if let path = Bundle.main.path(forResource: "APIKey", ofType: "plist") {
-              if let keys = NSDictionary(contentsOfFile: path) as? [String: Any],
-                  let apiKey = keys["WeatherAPIKey"] as? String {
-                  return apiKey
-              }
-          }
-          return ""
-      }
+    lazy var API_KEY: String = {
+        if let path = Bundle.main.path(forResource: "APIKey", ofType: "plist") {
+            if let keys = NSDictionary(contentsOfFile: path) as? [String: Any],
+               let apiKey = keys["WeatherAPIKey"] as? String {
+                return apiKey
+            }
+        }
+        return ""
+    }()
 }
-

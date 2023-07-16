@@ -30,4 +30,7 @@ cd WeatherApp
 <div style="display: flex;">
   <img src="https://github.com/cs4372/WeatherApp/blob/master/Screenshots/weatherApp-day.png" height="350px"/>
   <img src="https://github.com/cs4372/WeatherApp/blob/master/Screenshots/weatherApp-night.png" height="350px"/>
+  <img src="https://github.com/cs4372/WeatherApp/blob/master/Screenshots/spanish-localization.png" height="350px"/>
+  <img src="https://github.com/cs4372/WeatherApp/blob/master/Screenshots/chinese-localization.png" height="350px"/>
+  <img src="https://github.com/cs4372/WeatherApp/blob/master/Screenshots/french-localization.png" height="350px"/>
 </div>

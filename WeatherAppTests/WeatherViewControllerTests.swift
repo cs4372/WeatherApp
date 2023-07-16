@@ -57,20 +57,26 @@ class WeatherViewControllerTests: XCTestCase {
         XCTAssertTrue(mockWeatherViewModel.fetchWeatherForCurrentLocationCalled)
     }
     
-//    func testTextFieldShouldReturn() {
-//        // Given
-//        let textField = UITextField()
-//        textField.text = "London"
-//        textField.delegate = sut
-//        
-//        // When
-//        let result = sut.textFieldShouldReturn(textField)
-//        
-//        // Assert
-//        XCTAssertTrue(result)
-//        XCTAssertTrue(mockWeatherViewModel.fetchWeatherDataCalled)
-//        XCTAssertEqual(mockWeatherViewModel.fetchWeatherCity, "London")
-//    }
+    func testTextFieldShouldReturn() {
+        // Given
+        let textField = sut.bottomStackView.cityTextField
+        textField.text = "London"
+        let expectation = XCTestExpectation(description: "Fetch weather data")
+
+        // When
+        let result = sut.textFieldShouldReturn(textField)
+
+        // Wait for fetchWeatherData to complete
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: 1)
+        
+        // Assert
+        XCTAssertTrue(result)
+        XCTAssertTrue(mockWeatherViewModel.fetchWeatherDataCalled)
+        XCTAssertEqual(mockWeatherViewModel.fetchWeatherCity, "London")
+    }
 }
 
 class MockWeatherViewModel: WeatherViewModel {
@@ -78,20 +84,12 @@ class MockWeatherViewModel: WeatherViewModel {
     var fetchWeatherForCurrentLocationCalled = false
     var fetchWeatherDataCalled = false
     var fetchWeatherCity: String?
+    var fetchWeatherDataClosure: ((String) -> Void)?
     
-    override var weatherData: WeatherData? {
-        get {
-            return mockWeatherData
-        }
-        set {
-            mockWeatherData = nil
-        }
+    override func fetchWeatherData(city: String) async {
+        fetchWeatherDataCalled = true
+        fetchWeatherCity = city
     }
-    
-    func fetchWeatherData(city: String) {
-           fetchWeatherCity = city
-           fetchWeatherDataCalled = true
-       }
     
     override func fetchWeatherForCurrentLocation() {
         fetchWeatherForCurrentLocationCalled = true

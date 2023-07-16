@@ -75,20 +75,18 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
         locationManager.startUpdatingLocation()
     }
     
-    func fetchWeatherData(city: String) {
-        weatherService.fetchWeather(with: city) { [weak self] result in
-            switch result {
-            case .success(let weatherData):
-                self?.weatherData = weatherData
-            case .failure(let error):
-                let errorMessage = self?.handleError(error)
-                if let errorMessage {
-                    let titleMessage = "Please try again!"
-                    self?.didDisplayError?(titleMessage, errorMessage)
-                }
-            }
-        }
-    }
+    func fetchWeatherData(city: String) async {
+         do {
+             let weatherData = try await weatherService.fetchWeather(with: city)
+             self.weatherData = weatherData
+         } catch let error as WeatherServiceError {
+             let errorMessage = handleError(error)
+             let titleMessage = "Please try again!"
+             didDisplayError?(titleMessage, errorMessage)
+         } catch {
+             print("An error occurred: \(error)")
+         }
+     }
     
     private func handleError(_ error: WeatherServiceError) -> String {
         switch error {
@@ -111,14 +109,18 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
         }
         
         let geocoder = CLGeocoder()
-        geocoder.reverseGeocodeLocation(location) { [weak self] (placemarks, error) in
-            guard let placemark = placemarks?.first,
-                  let city = placemark.locality else {
-                return
+        Task {
+            do {
+                if let placemarks = try await geocoder.reverseGeocodeLocation(location).first {
+                    if let city = placemarks.locality {
+                        await fetchWeatherData(city: city)
+                    }
+                }
+            } catch {
+                print("Geocoding error: \(error)")
             }
-            self?.fetchWeatherData(city: city)
         }
-
+        
         locationManager.stopUpdatingLocation()
     }
     

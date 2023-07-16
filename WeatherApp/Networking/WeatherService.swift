@@ -14,38 +14,27 @@ enum WeatherServiceError: Error {
 }
 
 protocol WeatherService {
-    func fetchWeather(with city: String, completion: @escaping (Result<WeatherData, WeatherServiceError>)->Void)
+    func fetchWeather(with city: String) async throws -> WeatherData
 }
 
 class APIManager: WeatherService {
-
-    func fetchWeather(with city: String, completion: @escaping (Result<WeatherData, WeatherServiceError>)->Void) {
+    func fetchWeather(with city: String) async throws -> WeatherData {
+        guard let request = Endpoint.fetchWeather(city: city).request else {
+            throw WeatherServiceError.generalError(message: "Invalid request")
+        }
         
-        guard let request = Endpoint.fetchWeather(city: city).request else { return }
-                        
-        URLSession.shared.dataTask(with: request) { data, resp, error in
-            if let error = error {
-                completion(.failure(.generalError(message: error.localizedDescription)))
-                return
-            }
+        do {
+            let (data, resp) = try await URLSession.shared.data(for: request)
             
             if let resp = resp as? HTTPURLResponse, resp.statusCode != 200 {
                 let serverErrorMessage = "Server responded with status code \(resp.statusCode)"
-                completion(.failure(.serverError(message: serverErrorMessage)))
-                return
+                throw WeatherServiceError.serverError(message: serverErrorMessage)
             }
             
-            if let data = data {
-                do {
-                    let decoder = JSONDecoder()
-                    let weatherData = try decoder.decode(WeatherData.self, from: data)
-                    completion(.success(weatherData))
-                    
-                } catch let err {
-                    completion(.failure(.decodingError(err.localizedDescription)))
-                }
-                
-            }
-        }.resume()
+            let decoder = JSONDecoder()
+            return try decoder.decode(WeatherData.self, from: data)
+        } catch {
+            throw WeatherServiceError.decodingError(error.localizedDescription)
+        }
     }
 }

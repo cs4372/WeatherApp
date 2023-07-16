@@ -32,28 +32,28 @@ final class WeatherViewModelTests: XCTestCase {
         XCTAssertTrue(sut.weatherService is MockWeatherService, "The weatherService should be equal to the weatherService that was passed in.")
     }
     
-    func testFetchWeatherData_onAPISuccess() {
+    func testFetchWeatherData_onAPISuccess() async {
         // Given
         let city = "London"
         let weather = WeatherData(name: city, main: Main(temp: 12, minTemp: 20, maxTemp: 30, humidity: 80), weather: [Weather(description: "Very hot", id: 20)])
         mockWeatherService.fetchWeatherMockResult = .success(weather)
         
         // When
-        sut.fetchWeatherData(city: city)
+        await sut.fetchWeatherData(city: city)
         
         // Assert
         XCTAssert(mockWeatherService.isFetchWeatherCalled)
-        XCTAssertEqual(self.sut.weatherData, weather)
+        XCTAssertEqual(sut.weatherData, weather)
     }
     
-    func testFetchWeatherData_onAPIFailure() {
+    func testFetchWeatherData_onAPIFailure() async {
         // Given
         let city = "London"
         let expectedError = WeatherServiceError.serverError(message: "Server error occurred")
         mockWeatherService.fetchWeatherMockResult = .failure(expectedError)
         
         // When
-        sut.fetchWeatherData(city: city)
+        await sut.fetchWeatherData(city: city)
             
         // Assert
         sut.didDisplayError = { title, message in
@@ -108,12 +108,13 @@ class MockWeatherService: WeatherService {
     var fetchWeatherCity: String?
     var isFetchWeatherCalled = false
     
-    func fetchWeather(with city: String, completion: @escaping (Result<WeatherData, WeatherServiceError>) -> Void) {
+    func fetchWeather(with city: String) throws -> WeatherData {
         fetchWeatherCity = city
         isFetchWeatherCalled = true
-        if let result = fetchWeatherMockResult {
-            completion(result)
+        guard let result = fetchWeatherMockResult else {
+            throw WeatherServiceError.generalError(message: "Mock result not set")
         }
+        return try result.get()
     }
 }
 

@@ -142,9 +142,11 @@ class WeatherViewController: UIViewController {
     @objc internal func handleTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             let tapLocation = sender.location(in: view)
-            if !self.bottomStackView.cityTextField.frame.contains(tapLocation) {
+            if !bottomStackView.cityTextField.frame.contains(tapLocation) {
                 view.endEditing(true)
-                weatherViewModel.fetchWeatherData(city: self.bottomStackView.cityTextField.text ?? "")
+                Task {
+                    await weatherViewModel.fetchWeatherData(city: bottomStackView.cityTextField.text ?? "")
+                }
             }
         }
     }
@@ -164,10 +166,11 @@ class WeatherViewController: UIViewController {
 
 extension WeatherViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField == self.bottomStackView.cityTextField {
-            weatherViewModel.fetchWeatherData(city: textField.text ?? "")
+        if textField == bottomStackView.cityTextField {
+            Task {
+                await weatherViewModel.fetchWeatherData(city: textField.text ?? "")
+            }
             textField.resignFirstResponder()
-            
             return true
         }
         return false

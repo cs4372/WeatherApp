@@ -70,7 +70,7 @@ class WeatherViewControllerTests: XCTestCase {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             expectation.fulfill()
         }
-        wait(for: [expectation], timeout: 1)
+        wait(for: [expectation], timeout: 5)
         
         // Assert
         XCTAssertTrue(result)
@@ -84,7 +84,6 @@ class MockWeatherViewModel: WeatherViewModel {
     var fetchWeatherForCurrentLocationCalled = false
     var fetchWeatherDataCalled = false
     var fetchWeatherCity: String?
-    var fetchWeatherDataClosure: ((String) -> Void)?
     
     override func fetchWeatherData(city: String) async {
         fetchWeatherDataCalled = true

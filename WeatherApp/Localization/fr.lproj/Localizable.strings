@@ -1,0 +1,22 @@
+/* 
+  Localizable.strings
+  WeatherApp
+
+  Created by Catherine Shing on 7/16/23.
+  
+*/
+
+"Humidity" = "Humidité";
+"L" = "B";
+"H" = "H";
+"clear sky" = "Ciel dégagé";
+"few clouds" = "Quelques nuages";
+"scattered clouds" = "Nuages dispersés";
+"overcast clouds" = "Ciel couvert";
+"broken clouds" = "Nuages épars";
+"shower rain" = "Averses de pluie";
+"moderate rain" = "Pluie modérée";
+"rain" = "Pluie";
+"thunderstorm" = "Orage";
+"snow" = "Neige";
+"mist" = "Brouillard";

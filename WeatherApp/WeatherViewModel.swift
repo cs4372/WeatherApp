@@ -36,7 +36,9 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     }
     
     var weatherDescriptionString: String {
-        return weatherData?.weather.first?.description ?? "Unknown"
+        let weatherDescription = weatherData?.weather.first?.description ?? "Unknown"
+        let weatherDescriptionLocalizedString = NSLocalizedString(weatherDescription, comment: "Weather description")
+        return weatherDescriptionLocalizedString
     }
     
     var weatherImageIconName: String {
@@ -56,17 +58,21 @@ class WeatherViewModel: NSObject, CLLocationManagerDelegate {
     }
     
     var minTempString: String {
-        let minTemp = Helpers.convertKelvinToFahrenheit(kelvin: weatherData?.main.minTemp ?? 0)
-        return "L:\(minTemp)°F"
+        let minTempVal = Helpers.convertKelvinToFahrenheit(kelvin: weatherData?.main.minTemp ?? 0)
+        let minTempLocalizedString = NSLocalizedString("L", comment: "Lowest temperature label")
+        return "\(minTempLocalizedString): \(minTempVal)°F"
     }
     
     var maxTempString: String {
-        let maxTemp = Helpers.convertKelvinToFahrenheit(kelvin: weatherData?.main.maxTemp ?? 0)
-        return "H:\(maxTemp)°F"
+        let maxTempVal = Helpers.convertKelvinToFahrenheit(kelvin: weatherData?.main.maxTemp ?? 0)
+        let maxTempLocalizedString = NSLocalizedString("H", comment: "Highest temperature label")
+        return "\(maxTempLocalizedString): \(maxTempVal)°F"
     }
     
     var humidityString: String {
-        return "Humidity: \(weatherData?.main.humidity ?? 0)"
+        let humidityValue = weatherData?.main.humidity ?? 0
+        let humidityLocalizedString = NSLocalizedString("Humidity", comment: "Humidity label")
+        return "\(humidityLocalizedString): \(humidityValue)"
     }
     
     func fetchWeatherForCurrentLocation() {

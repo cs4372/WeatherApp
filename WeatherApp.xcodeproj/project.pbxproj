@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		476A107C2A6458860021AA5F /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 476A107E2A6458860021AA5F /* Localizable.strings */; };
 		4789D7952A5FA05E00E82849 /* BottomStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4789D7942A5FA05E00E82849 /* BottomStackView.swift */; };
 		4789D7972A5FA96F00E82849 /* TopStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4789D7962A5FA96F00E82849 /* TopStackView.swift */; };
 		4789D79F2A5FBEDB00E82849 /* WeatherAppSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4789D79E2A5FBEDB00E82849 /* WeatherAppSnapshotTests.swift */; };
@@ -57,6 +58,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		476A107F2A6458930021AA5F /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
+		476A10842A645E3B0021AA5F /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
+		476A10852A645E5F0021AA5F /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		4789D7942A5FA05E00E82849 /* BottomStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomStackView.swift; sourceTree = "<group>"; };
 		4789D7962A5FA96F00E82849 /* TopStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopStackView.swift; sourceTree = "<group>"; };
 		4789D79C2A5FBEDB00E82849 /* WeatherAppSnapshotTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WeatherAppSnapshotTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -121,6 +125,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		476A10862A646E1D0021AA5F /* Localization */ = {
+			isa = PBXGroup;
+			children = (
+				476A107E2A6458860021AA5F /* Localizable.strings */,
+			);
+			path = Localization;
+			sourceTree = "<group>";
+		};
 		4789D7932A5FA04500E82849 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -184,6 +196,7 @@
 		47C784B22A550F4E00E9A61A /* WeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				476A10862A646E1D0021AA5F /* Localization */,
 				4789D7932A5FA04500E82849 /* Views */,
 				47C784CC2A550FBE00E9A61A /* Networking */,
 				47C784CB2A550FB200E9A61A /* Supporting */,
@@ -345,6 +358,9 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
+				"zh-Hant",
+				es,
 			);
 			mainGroup = 47C784A72A550F4E00E9A61A;
 			packageReferences = (
@@ -375,6 +391,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				47B438B82A566CC300B4EDDF /* APIKey.plist in Resources */,
+				476A107C2A6458860021AA5F /* Localizable.strings in Resources */,
 				47C784C02A550F5000E9A61A /* LaunchScreen.storyboard in Resources */,
 				47C784BD2A550F5000E9A61A /* Assets.xcassets in Resources */,
 			);
@@ -457,6 +474,16 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		476A107E2A6458860021AA5F /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				476A107F2A6458930021AA5F /* fr */,
+				476A10842A645E3B0021AA5F /* zh-Hant */,
+				476A10852A645E5F0021AA5F /* es */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		47C784BE2A550F5000E9A61A /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -544,6 +571,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -590,7 +618,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -604,6 +632,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -644,7 +673,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

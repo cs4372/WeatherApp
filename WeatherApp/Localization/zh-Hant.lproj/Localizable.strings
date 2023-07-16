@@ -1,0 +1,22 @@
+/*
+  Localizable.strings
+  WeatherApp
+
+  Created by Catherine Shing on 7/16/23.
+  
+*/
+
+"Humidity" = "濕度";
+"L" = "低";
+"H" = "高";
+"clear sky" = "晴朗";
+"few clouds" = "少雲";
+"scattered clouds" = "雲散";
+"overcast clouds" = "多雲";
+"broken clouds" = "破碎雲";
+"shower rain" = "陣雨";
+"moderate rain" = "中雨";
+"rain" = "雨";
+"thunderstorm" = "雷暴";
+"snow" = "雪";
+"mist" = "霧";

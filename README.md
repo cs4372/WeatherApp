@@ -11,7 +11,8 @@ An app that provides real-time weather information based on the user's current l
 - Get weather information based on user's current location using OpenWeather API
 - Explore weather information for any city
 - Support for light/dark mode based on user's phone settings
-- Use of MVVM and programmatic UI
+- Use of MVVM, programmatic UI, Unit and Snapshot Testing
+- Add support for localization including French, Spanish and Chinese
 
 # Installation
 1. Clone the WeatherApp repository.
